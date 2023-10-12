@@ -1,0 +1,67 @@
+---
+title: "convergence-valence_space"
+author: "L.-Y. M."
+date: "2023-10-11"
+output: html_document
+---
+## input
+```{r set up, include=FALSE}
+setwd("/Users/owo/Desktop/convergence-valence space/")
+library("tidyverse")
+library("cowplot")
+```
+```{r data input, include=FALSE}
+group_data <- read_csv("data1.csv")
+# DATA1 <- read_csv("indS1dates1.csv")
+# DATA2 <- read_csv("indS1dates2.csv")
+# DATA  <- bind_rows(DATA1, DATA2)
+```
+## visualise
+point1 = (Deviation1, Error1) = (sd1, aee1) 
+Point2 = (Deviation2, Error2) = (sd2, aee2)
+```{r visualise without normalise, include=FALSE}
+group_data <- mutate(group_data, agree = sd2 < sd1)
+
+arrow_graph <- ggplot() +
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2), data = group_data, arrow = arrow(), alpha = 0.05) + 
+  theme_cowplot() + xlab('Disagreement') + ylab('Error')
+arrow_graph # original
+
+arrow_graph_accuracy <- ggplot() +
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = as.factor(improve)), data = group_data, arrow = arrow(), alpha = 0.5) + 
+  theme_cowplot() + xlab('Disagreement') + ylab('Error')
+arrow_graph_accuracy # original
+
+arrow_graph_agree <- ggplot() +
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = as.factor(agree)), data = group_data, arrow = arrow(), alpha = 0.5) + 
+  theme_cowplot() + xlab('Disagreement') + ylab('Error')
+arrow_graph_agree # original
+```
+```{r visualise normalised, include=FALSE}
+group_data_n <- group_data %>% 
+  pivot_longer(cols = 8:9,   names_to ="acc_time", values_to = "acc_val") %>% 
+  pivot_longer(cols = 12:13, names_to ="agr_time", values_to = "agr_val") %>% 
+  group_by(qcode) %>% 
+  mutate(acc_val = scale(acc_val), agr_val = scale(agr_val)) %>% 
+  pivot_wider(names_from = "acc_time", values_from = "acc_val") %>% 
+  pivot_wider(names_from = "agr_time", values_from = "agr_val")
+
+arrow_graph_n <- ggplot() +
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2), data = group_data_n, arrow = arrow(), alpha = 0.2) + 
+  theme_cowplot() + xlab('Disagreement') + ylab('Error')
+arrow_graph_n # original
+
+arrow_graph_accuracy_n <- ggplot() +
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = as.factor(improve)), data = group_data_n, arrow = arrow(), alpha = 0.5) + 
+  theme_cowplot() + xlab('Disagreement') + ylab('Error')
+arrow_graph_accuracy_n # original
+
+arrow_graph_agree_n <- ggplot() +
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = as.factor(agree)), data = group_data_n, arrow = arrow(), alpha = 0.4) + 
+  theme_cowplot() + xlab('Disagreement') + ylab('Error')
+arrow_graph_agree_n # original
+```
+```{r visualise normalised, include=FALSE}
+I_Mer <- plot_grid(arrow_graph, arrow_graph_accuracy, arrow_graph_agree, arrow_graph_n, arrow_graph_accuracy_n, arrow_graph_agree_n, labels = "AUTO")
+save_plot('figure_11Oct.png',I_Mer, ncol = 3, base_height = 5, base_asp = 1)
+```

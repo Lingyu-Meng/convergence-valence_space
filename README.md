@@ -9,4 +9,4 @@ For more clear information, arrows were break down by whether improved group inf
 You can get the same information by identify the orientation of arrows. The second column align with up or down, whilst third column align with left or right.
 
 For more reasonable comparation between with differen question, normalisation (z-score in the question) has been employed in second row. 
-figure_11Oct.png
+![image text](figure_11Oct.png)

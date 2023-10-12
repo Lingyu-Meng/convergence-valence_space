@@ -6,7 +6,7 @@ output: html_document
 ---
 ## input
 ```{r set up, include=FALSE}
-setwd("/Users/owo/Desktop/convergence-valence space/")
+setwd("/Users/owo/Desktop/convergence-valence_space/")
 library("tidyverse")
 library("cowplot")
 ```
@@ -17,10 +17,10 @@ group_data <- read_csv("data1.csv")
 # DATA  <- bind_rows(DATA1, DATA2)
 ```
 ## visualise
-point1 = (Deviation1, Error1) = (sd1, aee1) 
-Point2 = (Deviation2, Error2) = (sd2, aee2)
+# point1 = (Deviation1, Error1) = (sd1, aee1) 
+# point2 = (Deviation2, Error2) = (sd2, aee2)
 ```{r visualise without normalise, include=FALSE}
-group_data <- mutate(group_data, agree = sd2 < sd1)
+group_data <- mutate(group_data, agree = sd2 < sd1) # create a new variable to indicate whether group agreement formed
 
 arrow_graph <- ggplot() +
   geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2), data = group_data, arrow = arrow(), alpha = 0.05) + 
@@ -30,12 +30,12 @@ arrow_graph # original
 arrow_graph_accuracy <- ggplot() +
   geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = as.factor(improve)), data = group_data, arrow = arrow(), alpha = 0.5) + 
   theme_cowplot() + xlab('Disagreement') + ylab('Error')
-arrow_graph_accuracy # original
+arrow_graph_accuracy # original broken down with whether group performance were improved
 
 arrow_graph_agree <- ggplot() +
   geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = as.factor(agree)), data = group_data, arrow = arrow(), alpha = 0.5) + 
   theme_cowplot() + xlab('Disagreement') + ylab('Error')
-arrow_graph_agree # original
+arrow_graph_agree # original broken down with whether group agreement were formed
 ```
 ```{r visualise normalised, include=FALSE}
 group_data_n <- group_data %>% 
@@ -49,17 +49,17 @@ group_data_n <- group_data %>%
 arrow_graph_n <- ggplot() +
   geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2), data = group_data_n, arrow = arrow(), alpha = 0.2) + 
   theme_cowplot() + xlab('Disagreement') + ylab('Error')
-arrow_graph_n # original
+arrow_graph_n # normalised 
 
 arrow_graph_accuracy_n <- ggplot() +
   geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = as.factor(improve)), data = group_data_n, arrow = arrow(), alpha = 0.5) + 
   theme_cowplot() + xlab('Disagreement') + ylab('Error')
-arrow_graph_accuracy_n # original
+arrow_graph_accuracy_n # normalised broken down with whether group performance were improved
 
 arrow_graph_agree_n <- ggplot() +
   geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = as.factor(agree)), data = group_data_n, arrow = arrow(), alpha = 0.4) + 
   theme_cowplot() + xlab('Disagreement') + ylab('Error')
-arrow_graph_agree_n # original
+arrow_graph_agree_n # normalised broken down with whether group agreement were formed
 ```
 ```{r visualise normalised, include=FALSE}
 I_Mer <- plot_grid(arrow_graph, arrow_graph_accuracy, arrow_graph_agree, arrow_graph_n, arrow_graph_accuracy_n, arrow_graph_agree_n, labels = "AUTO")

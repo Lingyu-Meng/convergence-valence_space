@@ -1,4 +1,8 @@
 # convergence-valence_space
+![image text](figure_16Oct.png)
+Figures without normalisation have been removed. The right one (D) repersent average movement.
+
+--------
 If our aim is to visualize the impact of group discussion as movement, trajectories would be the ideal representation. As each group has two observations, this would result in paired samples for each group, represented as lines (with arrows for orientation).
 
 Dimensions 1: The extent of agreement within the group, represented as variance. (actually means Disagreement in x-axis)

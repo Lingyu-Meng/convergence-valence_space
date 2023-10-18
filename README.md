@@ -1,4 +1,7 @@
 # convergence-valence_space
+![image text](figure_18Oct.jpg)
+(A) Normalised all group movement. (B) Averaged movement of positive/ negative agreement group. Thickness represent number of cases. (C) Averaged movement of improved/ impaired performance group. Thickness represent number of cases.
+
 ![image text](figure_16Oct.png)
 Figures without normalisation have been removed. The right one (D) repersent average movement.
 

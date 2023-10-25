@@ -103,7 +103,9 @@ arrow_graph_improve_n_average # normalised broken down with whether group agreem
 # I_Mer <- plot_grid(arrow_graph, arrow_graph_accuracy, arrow_graph_agree, arrow_graph_n, arrow_graph_accuracy_n, arrow_graph_agree_n, labels = "AUTO") # figures without normalised are removed.
 # I_Mer <- plot_grid(arrow_graph_n, arrow_graph_accuracy_n, arrow_graph_agree_n, arrow_graph_agree_n_average, labels = "AUTO", nrow = 1)
 I_Mer <- plot_grid(arrow_graph_n, arrow_graph_agree_n_average, arrow_graph_improve_n_average, labels = "AUTO", nrow = 1, align = "v", axis = "lb")
+figure2 <- plot_grid(arrow_graph_agree_n, arrow_graph_accuracy_n, labels = "AUTO", nrow = 1, align = "v", axis = "lb")
 save_plot('figure_25Oct.jpg',I_Mer, ncol = 3)
+save_plot('figure2_25Oct.jpg',figure2, ncol = 2)
 ```
 ```{r save script, eval = FALSE}
 knitr::purl(input = "plot_code.Rmd", output = "plot_code_25Oct.R",documentation = 1)

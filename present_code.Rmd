@@ -1,0 +1,97 @@
+---
+title: "convergence-valence_space"
+author: "L.-Y. M."
+date: "2023-10-25"
+output: html_document
+---
+
+# Group Discussion
+
+People discuss when they didn't sure about some thing. Some times they can align with a same answers, some times they cannot. The thing is whether the agreement is reached matter in terms of the group decision?
+
+Silver, Mellers and Tetlock (2021) found that group interactions were likelier to yield increased accuracy if more accurate members being more confident in their own judgment and less accurate members less confident. By visuialising the discussion outcome, we can see this efferent driven by what kind of group.
+
+```{r set up, include = FALSE}
+library("tidyverse")
+library("cowplot")
+
+group_data <- read_csv("data1.csv")
+# DATA1 <- read_csv("indS1dates1.csv")
+# DATA2 <- read_csv("indS1dates2.csv")
+# DATA  <- bind_rows(DATA1, DATA2)
+group_data <- mutate(group_data, agree = sd2 < sd1) # create a new variable to indicate whether group agreement formed
+
+group_data_n <- group_data %>% 
+  pivot_longer(cols = 8:9,   names_to ="acc_time", values_to = "acc_val") %>% 
+  pivot_longer(cols = 12:13, names_to ="agr_time", values_to = "agr_val") %>% 
+  group_by(qcode) %>% 
+  mutate(acc_val = scale(acc_val), agr_val = scale(agr_val)) %>% 
+  pivot_wider(names_from = "acc_time", values_from = "acc_val") %>% 
+  pivot_wider(names_from = "agr_time", values_from = "agr_val") %>% 
+  mutate(agree = as.factor(agree), improve = as.factor(improve)) %>% 
+  ungroup(qcode)
+```
+
+# Visualise
+
+We use an arrow to represent the discussion process. That is an arrow form the pre-test point to post-test. The y-axis refer to Error, which is z-score (normalised in question level) of absolute difference value between the average answer of group and the correct answer. The x-axis refer to Disagreement, which is z-score (normalised in question level) of standard deviation of group's answer. In other word, we have an arrow for each group in every question, form point1 to point2: point1 = (Deviation_Time1, Error_Time1) point2 = (Deviation_Time2, Error_Time2)
+
+```{r visualise for average movement, echo = FALSE, warning = FALSE}
+arrow_graph_n <- ggplot() +
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2), data = group_data_n, arrow = arrow(), alpha = 0.2, size = 0.1) + 
+  theme_cowplot() + xlab('Disagreement') + ylab('Error') + ylim(-3, 5) + xlim(-2, 5) + theme(aspect.ratio=1) 
+arrow_graph_n # normalised 
+
+averaged_data_n <- group_data_n %>% 
+  select(sd1, sd2, aee1, aee2, agree) %>% 
+  group_by(agree) %>% 
+  summarise(sd1 = mean(sd1), sd2 = mean(sd2), aee1 = mean(aee1), aee2 = mean(aee2), case = n()/100)
+line_thickness <- averaged_data_n %>% select(case) %>% unlist() %>% as.vector() # don't mapping thickness by aes(size = x)
+
+arrow_graph_agree_n_average <- ggplot() +
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2), data = group_data_n, arrow = arrow(), alpha = 0.2, size = 0.1) + 
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = agree), data = averaged_data_n %>% filter(agree == 'TRUE'), arrow = arrow(), alpha = 1, lwd = line_thickness[2]) + 
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = agree), data = averaged_data_n %>% filter(agree == 'FALSE'), arrow = arrow(), alpha = 1, lwd = line_thickness[1]) + 
+  theme_cowplot() + xlab('Disagreement') + ylab('Error') + ylim(-3, 5) + xlim(-2, 5) + guides(size = "none") + theme(aspect.ratio=1)
+arrow_graph_agree_n_average # normalised broken down with whether group agreement were formed
+
+averaged_data_n <- group_data_n %>% 
+  select(sd1, sd2, aee1, aee2, improve) %>% 
+  group_by(improve) %>% 
+  summarise(sd1 = mean(sd1), sd2 = mean(sd2), aee1 = mean(aee1), aee2 = mean(aee2), case = n()/100)
+
+line_thickness <- averaged_data_n %>% select(case) %>% unlist() %>% as.vector()
+arrow_graph_improve_n_average <- ggplot() +
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2), data = group_data_n, arrow = arrow(), alpha = 0.2, size = 0.1) +
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = improve), data = averaged_data_n %>% filter(improve == 1), arrow = arrow(), alpha = 1, lwd = line_thickness[2]) + 
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = improve), data = averaged_data_n %>% filter(improve == 0), arrow = arrow(), alpha = 1, lwd = line_thickness[1]) + 
+  theme_cowplot() + xlab('Disagreement') + ylab('Error') + ylim(-3, 5) + xlim(-2, 5) + guides(size = "none") + theme(aspect.ratio=1)
+arrow_graph_improve_n_average # normalised broken down with whether group agreement were formed
+```
+
+The first figure present all arrows in study 1. The second figure present an average movement of the group who reduced deviation (group's answer converged) or the group who increased deviation (group's answer diverged). The third figure present an average movement of the group who improved performance (averaged group's answer) or the group who impaired performance. The thickness represent the case number.
+
+We can see there rarely are group didn't reached agreement (57 vs 670), and even they didn't align with each other, their averaged performance are improved. However, there are considerable group didn't improved their performance (276 vs 451).
+
+The arrow of positive agreement group is much longer than negative agreement group, which means most of them were aware of some information they lacked or some reasonable inference during the discussion. In terms of negative agreement group, there averaged movement is much shorter, and hard to say have a orientation. That means those group are not luck enough to get information or reasonable inference during the discussion, rather than they really have different opinions and become to polarization.
+
+We breaked down this two kind of class to show how they changed their answer.
+
+```{r visualise with normalised, echo = FALSE, warning = FALSE}
+arrow_graph_accuracy_n <- ggplot() +
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = improve), data = group_data_n, arrow = arrow(), alpha = 0.4) + 
+  theme_cowplot() + xlab('Disagreement') + ylab('Error') + ylim(-3, 5) + xlim(-2, 5)
+arrow_graph_accuracy_n # normalised broken down with whether group performance were improved
+
+arrow_graph_agree_n <- ggplot() +
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = agree), data = group_data_n %>% filter(agree == 'TRUE'), arrow = arrow(), alpha = 0.4) + 
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = agree), data = group_data_n %>% filter(agree == 'FALSE'), arrow = arrow(), alpha = 0.4) + 
+  theme_cowplot() + xlab('Disagreement') + ylab('Error') + ylim(-3, 5) + xlim(-2, 5)
+arrow_graph_agree_n # normalised broken down with whether group agreement were formed
+```
+
+In case of improvement, there are lots of group significant aligned with each other to get better or worse. In case of agreement, most of them are wandering.
+
+# Reference
+
+Silver, I., Mellers, B.A. and Tetlock, P.E. (2021) \'Wise teamwork: Collective confidence calibration predicts the effectiveness of group discussion\', *Journal of Experimental Social Psychology*, 96, p. 104157. Available at: <https://doi.org/10.1016/j.jesp.2021.104157>

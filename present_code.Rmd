@@ -1,6 +1,6 @@
 ---
 title: "convergence-valence_space"
-author: "L.-Y. M."
+author: "Lingyu Meng, Tom Stafford"
 date: "2023-10-25"
 output: html_document
 ---
@@ -15,9 +15,13 @@ Silver, Mellers and Tetlock (2021) found that group interactions were likelier t
 
 We use an arrow to represent the discussion process. That is an arrow form the pre-test point to post-test. The y-axis refer to Error, which is z-score (normalised in question level) of absolute difference value between the average answer of group and the correct answer. The x-axis refer to Disagreement, which is z-score (normalised in question level) of standard deviation of group's answer. In other word, we have an arrow for each group in every question, form point1 to point2: point1 = (Deviation_Time1, Error_Time1) point2 = (Deviation_Time2, Error_Time2)
 
-![](figure_25Oct.jpg)
+![](figure_1.jpg)
+The first figure present all arrows in study 1. 
 
-The left figure (A) present all arrows in study 1. The medial figure (B) present an average movement of the group who reduced deviation (group's answer converged) or the group who increased deviation (group's answer diverged). The right figure (C) present an average movement of the group who improved performance (averaged group's answer) or the group who impaired performance. The thickness represent the case number.
+![](figure_2.jpg)
+The second figure present an average movement of the group who reduced deviation (group's answer converged) or the group who increased deviation (group's answer diverged). 
+![](figure_3.jpg)
+The third figure present an average movement of the group who improved performance (averaged group's answer) or the group who impaired performance. The thickness represent the case number.
 
 We can see there rarely are group didn't reached agreement (57 vs 670), and even they didn't align with each other, their averaged performance are improved. However, there are considerable group didn't improved their performance (276 vs 451).
 

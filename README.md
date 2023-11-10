@@ -2,6 +2,7 @@
 
 Deployed as github pages at <https://lingyu-meng.github.io/convergence-valence_space/>
 
+<! --
 ![image text](figure_25Oct.jpg)
 (A) Normalised all group movement. (B) Averaged movement of positive/ negative agreement group. Thickness represent number of cases. (C) Averaged movement of improved/ impaired performance group. Thickness represent number of cases.
 
@@ -20,3 +21,5 @@ You can get the same information by identify the orientation of arrows. The seco
 
 For more reasonable comparation between with differen question, normalisation (z-score in the question) has been employed in second row. 
 ![image text](figure_11Oct.png)
+
+-->

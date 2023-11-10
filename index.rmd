@@ -9,6 +9,9 @@ output: html_document
 #defaults
 knitr::opts_chunk$set(warning = FALSE)
 knitr::opts_chunk$set(message = FALSE)
+
+#plot parameters
+avg_scale <- 2 # bigger numbers make arrors showing averages smaller
 ```
 
 # Group Discussion
@@ -63,7 +66,7 @@ We look only at Silver, Mellers & Tetlock (2021), study 1. Showing all groups an
 <details>
 ```{r figure 1. group data, warning = FALSE}
 arrow_graph_n <- ggplot() +
-  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2), data = group_data_n, arrow = arrow(), alpha = 0.2, size = 0.1) + 
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2), data = group_data_n, arrow = arrow(length=unit(0.1,"inches")), alpha = 0.1) + 
   theme_cowplot() + xlab('Disagreement') + ylab('Error') + ylim(-3, 5) + xlim(-2, 5) + theme(aspect.ratio=1) 
 ```
 </details>
@@ -86,9 +89,9 @@ averaged_data_n <- group_data_n %>%
 line_thickness <- averaged_data_n %>% select(case) %>% unlist() %>% as.vector() # don't mapping thickness by aes(size = x)
 
 arrow_graph_agree_n_average <- ggplot() +
-  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2), data = group_data_n, arrow = arrow(), alpha = 0.2, size = 0.1) + 
-  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = agree), data = averaged_data_n %>% filter(agree == 'TRUE'), arrow = arrow(), alpha = 1, lwd = line_thickness[2]) + 
-  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = agree), data = averaged_data_n %>% filter(agree == 'FALSE'), arrow = arrow(), alpha = 1, lwd = line_thickness[1]) + 
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2), data = group_data_n, arrow = arrow(length=unit(0.1,"inches")), alpha = 0.2, size = 0.1) + 
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = agree), data = averaged_data_n %>% filter(agree == 'TRUE'), arrow = arrow(length=unit(0.1,"inches")), alpha = 1, lwd = (line_thickness[2]+1)/avg_scale) + 
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = agree), data = averaged_data_n %>% filter(agree == 'FALSE'), arrow = arrow(length=unit(0.1,"inches")), alpha = 1, lwd = (line_thickness[1]+1)/avg_scale) + 
   theme_cowplot() + xlab('Disagreement') + ylab('Error') + ylim(-3, 5) + xlim(-2, 5) + guides(size = "none") + theme(aspect.ratio=1)
 ```
 </details>
@@ -98,9 +101,9 @@ arrow_graph_agree_n_average # normalised broken down with whether group agreemen
 ggsave("figure_2.jpg")
 ```
 
-## Converging vs diverging discussions
+## Error increasing or reducing discussions
 
-Now we show the average movement for two kinds of discussions: those where individual's answers became more accurate vs those where individual's answers became less accurate. The arrow thickness represents the number of dicussions in each category:
+Now we show the average movement for two kinds of discussions: those where individual's answers became more accurate vs those where individual's answers became less accurate. The arrow thickness represents the number of discussions in each category:
 
 <details>
 ```{r figure 3. averaged movement breaked down on improvement, warning = FALSE}
@@ -114,12 +117,15 @@ line_thickness <- averaged_data_n %>% select(case) %>% unlist() %>% as.vector() 
 levels(averaged_data_n$improve) <- c("FALSE", "TRUE") # rename improvement level
 
 arrow_graph_improve_n_average <- ggplot() +
-  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2), data = group_data_n, arrow = arrow(), alpha = 0.2, size = 0.1) +
-  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = improve), data = averaged_data_n %>% filter(improve == 'TRUE'), arrow = arrow(), alpha = 1, lwd = line_thickness[2]) + 
-  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = improve), data = averaged_data_n %>% filter(improve == 'FALSE'), arrow = arrow(), alpha = 1, lwd = line_thickness[1]) + 
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2), data = group_data_n, arrow = arrow(length=unit(0.1,"inches")), alpha = 0.2, size = 0.1) +
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = improve), data = averaged_data_n %>% filter(improve == 'TRUE'), arrow = arrow(length=unit(0.1,"inches")), alpha = 1, lwd = (line_thickness[2]+1)/avg_scale) + 
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = improve), data = averaged_data_n %>% filter(improve == 'FALSE'), arrow = arrow(length=unit(0.1,"inches")), alpha = 1, lwd = (line_thickness[1]+1)/avg_scale,) + 
   theme_cowplot() + xlab('Disagreement') + ylab('Error') + ylim(-3, 5) + xlim(-2, 5) + guides(size = "none") + theme(aspect.ratio=1)
 ```
 </details>
+
+
+
 
 ```{r echo=FALSE, fig.cap="Figure 3: Movement of each group pre/post discussion, in normalised diagreement-error space, highlighting average movement for groups which improve or degrade in accruacy following discussion"}
 arrow_graph_improve_n_average # normalised broken down with whether group agreement were formed
@@ -143,7 +149,7 @@ We colour the arrows by the two kind of class to show how they changed their ans
 levels(group_data_n$improve) <- c("FALSE", "TRUE") # rename improvement level
 
 arrow_graph_agree_n <- ggplot() +
-  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = agree), data = group_data_n, arrow = arrow(), alpha = 0.4) + 
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = agree), data = group_data_n, arrow = arrow(length=unit(0.1,"inches")), alpha = 0.3) + 
   theme_cowplot() + xlab('Disagreement') + ylab('Error') + ylim(-3, 5) + xlim(-2, 5) + theme(aspect.ratio=1)
 ```
 </details>
@@ -156,7 +162,7 @@ ggsave("Figure_4.jpg")
 <details>
 ```{r figure 5. group date breaked down separately, warning = FALSE}
 arrow_graph_accuracy_n <- ggplot() +
-  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = improve), data = group_data_n, arrow = arrow(), alpha = 0.5) + 
+  geom_segment(aes(x = sd1, y = aee1, xend = sd2, yend = aee2, colour = improve), data = group_data_n, arrow = arrow(length=unit(0.1,"inches")), alpha = 0.3) + 
   theme_cowplot() + xlab('Disagreement') + ylab('Error') + ylim(-3, 5) + xlim(-2, 5) + theme(aspect.ratio=1)
 ```
 </details>

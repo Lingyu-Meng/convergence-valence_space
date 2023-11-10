@@ -24,7 +24,7 @@ To visualise the effect of group discussion on these two dimensions - agreement 
 
 Silver, Mellers and Tetlock (2021) found that group interactions were likelier to yield increased accuracy if more accurate members were more confident in their own judgment and less accurate members less confident. By visuialising how the discussions change individuals answers we can see how different kinds of groups contribute to these effects.
 
-# Visualising how discussion moves individual's answers
+# Visualising how discussion moves individuals' answers
 
 We use an arrow to represent the pre and post discussion scores of each group. Each group has multiple discussions and each discussion is shown with a single arrow <!-- LINGU how many questions did each group do-->
 
